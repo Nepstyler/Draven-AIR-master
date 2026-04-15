@@ -30,12 +30,14 @@ namespace Draven.Messages.SpellBookService
                     {
                         conn.Open();
 
+                        // Ștergem paginile vechi
                         using (MySqlCommand delCmd = new MySqlCommand("DELETE FROM rune_pages WHERE account_id = @accId", conn))
                         {
                             delCmd.Parameters.AddWithValue("@accId", spellBook.SummonerId);
                             delCmd.ExecuteNonQuery();
                         }
 
+                        // Salvăm paginile noi, inclusiv itemele
                         foreach (object pageObj in spellBook.BookPages)
                         {
                             SpellBookPageDTO page = pageObj as SpellBookPageDTO;
@@ -46,10 +48,37 @@ namespace Draven.Messages.SpellBookService
                             {
                                 foreach (object entryObj in page.SlotEntries)
                                 {
-                                    SlotEntry entry = entryObj as SlotEntry;
-                                    if (entry != null && entry.RuneSlotId >= 1 && entry.RuneSlotId <= 30)
+                                    int slotId = 0;
+                                    int runeId = 0;
+
+                                    // Metoda 1: Daca obiectul este clar SlotEntry
+                                    if (entryObj is SlotEntry entry)
                                     {
-                                        slots[entry.RuneSlotId] = entry.RuneId;
+                                        slotId = entry.RuneSlotId;
+                                        runeId = entry.RuneId;
+                                    }
+                                    // Metoda 2: Daca obiectul vine ca AsObject (AMF Dictionary netipat)
+                                    else if (entryObj is RtmpSharp.IO.AsObject asObj)
+                                    {
+                                        if (asObj.ContainsKey("runeSlotId")) slotId = Convert.ToInt32(asObj["runeSlotId"]);
+                                        if (asObj.ContainsKey("runeId")) runeId = Convert.ToInt32(asObj["runeId"]);
+                                    }
+                                    // Metoda 3: Metoda de siguranta prin dynamic/reflexie
+                                    else
+                                    {
+                                        try
+                                        {
+                                            dynamic dyn = entryObj;
+                                            slotId = Convert.ToInt32(dyn.runeSlotId);
+                                            runeId = Convert.ToInt32(dyn.runeId);
+                                        }
+                                        catch { }
+                                    }
+
+                                    // Adaugam in vector doar daca indexul si runa sunt valide
+                                    if (slotId >= 1 && slotId <= 30 && runeId > 0)
+                                    {
+                                        slots[slotId] = runeId;
                                     }
                                 }
                             }
@@ -78,7 +107,7 @@ namespace Draven.Messages.SpellBookService
                             }
                         }
                     }
-                    Console.WriteLine("[SUCCESS] Paginile de Rune au fost salvate pentru: " + client._session.Summary.Username);
+                    Console.WriteLine("[SUCCESS] Paginile de Rune (si itemele) salvate pt: " + client._session.Summary.Username);
                 }
                 catch (Exception ex)
                 {
