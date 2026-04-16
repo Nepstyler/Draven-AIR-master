@@ -12,7 +12,6 @@ namespace Draven.Messages.MasteryBookService
 {
     class GetMasteryBook : IMessage
     {
-        // Conexiunea la baza de date lol
         private string connString = "Server=127.0.0.1;Database=lol;Uid=root;Pwd=;";
 
         public RemotingMessageReceivedEventArgs HandleMessage(object sender, RemotingMessageReceivedEventArgs e)
@@ -56,7 +55,7 @@ namespace Draven.Messages.MasteryBookService
                                         TalentEntry entry = new TalentEntry();
                                         entry.TalentId = kvp.Key;
                                         entry.Rank = kvp.Value;
-                                        entry.SummonerId = summonerId;
+                                        // AM STERS linia cu SummonerId de aici!
                                         page.Entries.Add(entry);
                                     }
                                 }

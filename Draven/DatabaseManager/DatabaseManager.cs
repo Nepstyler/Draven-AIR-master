@@ -84,141 +84,112 @@
 
         public static void InitMasteryAndRuneTree()
         {
-            Dictionary<string, int> _masterySort = new Dictionary<string, int> { { "Ferocity", 1 }, { "Cunning", 2 }, { "Resolve", 3 } };
+            Console.WriteLine("[LOG] Initialize Mastery and Rune Tree (100% Accurate Grid)");
 
-            Console.WriteLine("[LOG] Initialize Mastery and Rune Tree");
-            using (WebClient client = new WebClient())
+            TalentTree = new RtmpSharp.IO.AMF3.ArrayCollection();
+
+            string[] groupNames = new string[] { "Offense", "Defense", "Utility" };
+            for (int i = 0; i < 3; i++)
             {
-                //Download the latest mastery daata
-                string MasteryData = client.DownloadString("http://ddragon.leagueoflegends.com/cdn/6.24.1/data/en_US/mastery.json");
-
-                Masteries mData = JsonConvert.DeserializeObject<Masteries>(MasteryData);
-                TalentTree = new ArrayCollection();
-
-                foreach (var mastery in mData.tree)
+                TalentTree.Add(new Draven.Structures.Platform.Summoner.TalentGroup
                 {
-                    TalentGroup group = new TalentGroup
-                    {
-                        Name = mastery.Key,
-                        TalentRows = new ArrayCollection(),
-                        TltGroupId = _masterySort[mastery.Key],
-                        Index = _masterySort[mastery.Key] - 1
-                    };
-
-                    for (int i = 0; i < mastery.Value.Count; i++)
-                    {
-                        ArrayCollection talentList = new ArrayCollection();
-                        List<MasteryLite> masteryList = mastery.Value[i];
-                        for (int j = 0; j < masteryList.Count; j++)
-                        {
-                            if (masteryList[j] == null)
-                                continue;
-
-                            var data = mData.data[masteryList[j].masteryId];
-                            Talent t = new Talent
-                            {
-                                Index = j,
-                                Name = data.name,
-                                Level1Desc = data.name,
-                                Level2Desc = data.name,
-                                Level3Desc = data.name,
-                                Level4Desc = data.name,
-                                Level5Desc = data.name,
-                                GameCode = data.id,
-                                TltId = data.id,
-                                MaxRank = data.ranks,
-                                MinLevel = 1,
-                                MinTier = 1,
-                                TalentGroupId = group.TltGroupId,
-                                TalentRowId = (i + 1) * group.TltGroupId
-                            };
-
-                            if (data.preReq != "0")
-                                t.PrereqTalentGameCode = Convert.ToInt32(data.preReq);
-
-                            talentList.Add(t);
-                        }
-
-                        TalentRow row = new TalentRow
-                        {
-                            Index = i,
-                            Talents = talentList,
-                            PointsToActivate = i * 4,
-                            TltRowId = (i + 1) * group.TltGroupId,
-                            TltGroupId = group.TltGroupId
-                        };
-
-                        group.TalentRows.Add(row);
-                    }
-
-                    TalentTree.Add(group);
-                }
-
-                #region Rune Loading
-                RuneTree = new ArrayCollection();
-
-                int Modifier = 0;
-                int Take = 3;
-                for (int i = 1; i <= 9; i++)
-                {
-                    if ((i - 1) % 3 == 0 && i != 1)
-                    {
-                        Modifier += 1;
-                    }
-
-                    int IdAdd = (Math.Abs(Take - 3) * 10);
-                    IdAdd -= Math.Abs(Take - 3);
-
-                    RuneSlot slot = new RuneSlot()
-                    {
-                        Id = IdAdd + i,
-                        RuneType = new RuneType(),
-                        MinLevel = (3 * i + 1) - Take + Modifier
-                    };
-
-                    if (Take == 3)
-                    {
-                        slot.RuneType.Name = "Red";
-                        slot.RuneType.Id = 1;
-                    }
-                    else if (Take == 2)
-                    {
-                        slot.RuneType.Name = "Yellow";
-                        slot.RuneType.Id = 3;
-                    }
-                    else
-                    {
-                        slot.RuneType.Name = "Blue";
-                        slot.RuneType.Id = 5;
-                    }
-
-                    RuneTree.Add(slot);
-
-                    if (i == 9 && Take > 1)
-                    {
-                        Take -= 1;
-                        i = 0;
-                        Modifier = 0;
-                    }
-                }
-
-                for (int i = 1; i <= 3; i++)
-                {
-                    RuneSlot slot = new RuneSlot()
-                    {
-                        Id = 27 + i,
-                        RuneType = new RuneType
-                        {
-                            Id = 7,
-                            Name = "Black"
-                        },
-                        MinLevel = 10 * i
-                    };
-
-                    RuneTree.Add(slot);
-                }
-                #endregion
+                    Name = groupNames[i],
+                    TalentRows = new RtmpSharp.IO.AMF3.ArrayCollection(),
+                    TltGroupId = i + 1,
+                    Index = i
+                });
             }
+
+            Action<int, int, int> addRow = (groupId, rowIndex, pointsReq) => {
+                ((Draven.Structures.Platform.Summoner.TalentGroup)TalentTree[groupId - 1]).TalentRows.Add(new Draven.Structures.Platform.Summoner.TalentRow
+                {
+                    Index = rowIndex,
+                    Talents = new RtmpSharp.IO.AMF3.ArrayCollection(),
+                    PointsToActivate = pointsReq,
+                    TltRowId = ((groupId - 1) * 6) + rowIndex + 1,
+                    TltGroupId = groupId
+                });
+            };
+
+            Action<int, int, int, int, int, int> addTalent = (groupId, rowIndex, colIndex, id, maxRank, prereq) => {
+                var row = (Draven.Structures.Platform.Summoner.TalentRow)((Draven.Structures.Platform.Summoner.TalentGroup)TalentTree[groupId - 1]).TalentRows[rowIndex];
+                var t = new Draven.Structures.Platform.Summoner.Talent
+                {
+                    Index = colIndex,
+                    GameCode = id,
+                    TltId = id,
+                    MinLevel = 1,
+                    MinTier = 1,
+                    MaxRank = maxRank,
+                    TalentGroupId = groupId,
+                    TalentRowId = row.TltRowId,
+                    Name = "Tlt" + id,
+                    Level1Desc = "-",
+                    Level2Desc = "-",
+                    Level3Desc = "-",
+                    Level4Desc = "-",
+                    Level5Desc = "-"
+                };
+                if (prereq != 0) t.PrereqTalentGameCode = prereq;
+                row.Talents.Add(t);
+            };
+
+            // ================== OFFENSE TREE ==================
+            addRow(1, 0, 0);
+            addTalent(1, 0, 0, 4111, 1, 0); addTalent(1, 0, 1, 4112, 4, 0); addTalent(1, 0, 2, 4113, 4, 0); addTalent(1, 0, 3, 4114, 1, 0);
+            addRow(1, 1, 4);
+            addTalent(1, 1, 0, 4121, 1, 0); addTalent(1, 1, 1, 4122, 3, 0); addTalent(1, 1, 2, 4123, 3, 0); addTalent(1, 1, 3, 4124, 1, 4114);
+            addRow(1, 2, 8);
+            addTalent(1, 2, 0, 4131, 1, 0); addTalent(1, 2, 1, 4132, 1, 4122); addTalent(1, 2, 2, 4133, 1, 4123); addTalent(1, 2, 3, 4134, 3, 0);
+            addRow(1, 3, 12);
+            addTalent(1, 3, 0, 4141, 1, 4131); addTalent(1, 3, 1, 4142, 3, 0); addTalent(1, 3, 2, 4143, 3, 0); addTalent(1, 3, 3, 4144, 1, 4134);
+            addRow(1, 4, 16);
+            addTalent(1, 4, 0, 4151, 1, 0); addTalent(1, 4, 1, 4152, 3, 0); addTalent(1, 4, 3, 4154, 1, 0);
+            addRow(1, 5, 20);
+            addTalent(1, 5, 1, 4162, 1, 0);
+
+            // ================== DEFENSE TREE ==================
+            addRow(2, 0, 0); // Row 1
+            addTalent(2, 0, 0, 4211, 2, 0); addTalent(2, 0, 1, 4212, 2, 0); addTalent(2, 0, 2, 4213, 2, 0); addTalent(2, 0, 3, 4214, 2, 0);
+            addRow(2, 1, 4); // Row 2
+            addTalent(2, 1, 0, 4221, 1, 4211); addTalent(2, 1, 1, 4222, 3, 0); addTalent(2, 1, 3, 4224, 1, 4214);
+            addRow(2, 2, 8); // Row 3
+            addTalent(2, 2, 0, 4231, 1, 0); addTalent(2, 2, 1, 4232, 1, 4222); addTalent(2, 2, 2, 4233, 3, 0); addTalent(2, 2, 3, 4234, 3, 0);
+            addRow(2, 3, 12); // Row 4
+            addTalent(2, 3, 0, 4241, 3, 0); addTalent(2, 3, 1, 4242, 1, 0); addTalent(2, 3, 2, 4243, 1, 4233); addTalent(2, 3, 3, 4244, 1, 4234);
+            addRow(2, 4, 16); // Row 5
+            addTalent(2, 4, 0, 4251, 1, 4241); addTalent(2, 4, 1, 4252, 4, 0); addTalent(2, 4, 2, 4253, 1, 0);
+            addRow(2, 5, 20); // Row 6
+            addTalent(2, 5, 1, 4262, 1, 0);
+
+            // ================== UTILITY TREE ==================
+            addRow(3, 0, 0); // Row 1
+            addTalent(3, 0, 0, 4311, 1, 0); addTalent(3, 0, 1, 4312, 3, 0); addTalent(3, 0, 2, 4313, 3, 0); addTalent(3, 0, 3, 4314, 1, 0);
+            addRow(3, 1, 4); // Row 2
+            addTalent(3, 1, 1, 4322, 3, 0); addTalent(3, 1, 2, 4323, 1, 4313); addTalent(3, 1, 3, 4324, 1, 0);
+            addRow(3, 2, 8); // Row 3
+            addTalent(3, 2, 0, 4331, 3, 0); addTalent(3, 2, 1, 4332, 1, 0); addTalent(3, 2, 2, 4333, 3, 0); addTalent(3, 2, 3, 4334, 1, 4324);
+            addRow(3, 3, 12); // Row 4
+            addTalent(3, 3, 0, 4341, 1, 4331); addTalent(3, 3, 1, 4342, 1, 0); addTalent(3, 3, 2, 4343, 3, 0); addTalent(3, 3, 3, 4344, 2, 0);
+            addRow(3, 4, 16); // Row 5
+            addTalent(3, 4, 1, 4352, 1, 4342); addTalent(3, 4, 2, 4353, 3, 0);
+            addRow(3, 5, 20); // Row 6
+            addTalent(3, 5, 1, 4362, 1, 0);
+
+            #region Rune Loading
+            RuneTree = new RtmpSharp.IO.AMF3.ArrayCollection();
+            int Modifier = 0; int Take = 3;
+            for (int i = 1; i <= 9; i++)
+            {
+                if ((i - 1) % 3 == 0 && i != 1) Modifier += 1;
+                int IdAdd = (Math.Abs(Take - 3) * 10) - Math.Abs(Take - 3);
+                Draven.Structures.Platform.Catalog.RuneSlot slot = new Draven.Structures.Platform.Catalog.RuneSlot() { Id = IdAdd + i, RuneType = new Draven.Structures.Platform.Catalog.RuneType(), MinLevel = (3 * i + 1) - Take + Modifier };
+                if (Take == 3) { slot.RuneType.Name = "Red"; slot.RuneType.Id = 1; } else if (Take == 2) { slot.RuneType.Name = "Yellow"; slot.RuneType.Id = 3; } else { slot.RuneType.Name = "Blue"; slot.RuneType.Id = 5; }
+                RuneTree.Add(slot);
+                if (i == 9 && Take > 1) { Take -= 1; i = 0; Modifier = 0; }
+            }
+            for (int i = 1; i <= 3; i++) RuneTree.Add(new Draven.Structures.Platform.Catalog.RuneSlot() { Id = 27 + i, RuneType = new Draven.Structures.Platform.Catalog.RuneType { Id = 7, Name = "Black" }, MinLevel = 10 * i });
+            #endregion
         }
 
         public static List<int> ProfileIcons = new List<int>();

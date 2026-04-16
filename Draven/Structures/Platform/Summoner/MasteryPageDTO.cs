@@ -1,25 +1,30 @@
-﻿namespace Draven.Structures.Platform.Summoner
+﻿using System;
+using RtmpSharp.IO;
+using RtmpSharp.IO.AMF3;
+
+namespace Draven.Structures.Platform.Summoner
 {
-    using System;
-
-    using RtmpSharp.IO;
-    using RtmpSharp.IO.AMF3;
-
     [Serializable]
     [SerializedName("com.riotgames.platform.summoner.masterybook.MasteryBookPageDTO")]
     public class MasteryBookPageDTO
     {
-        [SerializedName("current")]
-        public Boolean Current { get; set; }
+        // Clientul trimite talentEntries, dar noi în C# îl numim Entries pentru compatibilitate
+        [SerializedName("talentEntries")]
+        public ArrayCollection Entries { get; set; }
+
+        [SerializedName("summonerId")]
+        public double SummonerId { get; set; }
+
         [SerializedName("createDate")]
         public DateTime CreateDate { get; set; }
+
         [SerializedName("name")]
-        public String Name { get; set; }
+        public string Name { get; set; }
+
         [SerializedName("pageId")]
-        public Int32 PageId { get; set; }
-        [SerializedName("summonerId")]
-        public Double SummonerId { get; set; }
-        [SerializedName("entries")]
-        public ArrayCollection Entries { get; set; }
+        public int PageId { get; set; }
+
+        [SerializedName("current")]
+        public bool Current { get; set; }
     }
 }

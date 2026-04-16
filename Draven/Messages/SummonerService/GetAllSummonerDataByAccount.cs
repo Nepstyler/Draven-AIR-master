@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace Draven.Messages.SummonerService
 {
@@ -16,11 +17,62 @@ namespace Draven.Messages.SummonerService
 
     class GetAllSummonerDataByAccount : IMessage
     {
+        private string connString = "Server=127.0.0.1;Database=lol;Uid=root;Pwd=;";
+
         public RemotingMessageReceivedEventArgs HandleMessage(object sender, RemotingMessageReceivedEventArgs e)
         {
             object[] body = e.Body as object[];
             SummonerClient summonerSender = sender as SummonerClient;
             int creds = Convert.ToInt32(body[0]);
+
+            // PRELUĂM RUNELE REALE DIN BAZA DE DATE
+            SpellBookDTO dbSpellBook = new SpellBookDTO
+            {
+                SummonerId = summonerSender._sumId,
+                DateString = DateTime.Now.ToString(),
+                BookPages = new ArrayCollection()
+            };
+
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connString))
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM rune_pages WHERE account_id = @accId", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@accId", summonerSender._sumId);
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                SpellBookPageDTO page = new SpellBookPageDTO();
+                                page.PageId = reader.GetInt32("id"); // INT curat, a rezolvat eroarea!
+                                page.Name = reader.GetString("page_name");
+                                page.Current = reader.GetBoolean("is_current");
+                                page.SummonerId = summonerSender._sumId;
+                                page.CreateDate = DateTime.Now;
+                                page.SlotEntries = new ArrayCollection();
+
+                                for (int i = 1; i <= 30; i++)
+                                {
+                                    int runeId = reader.GetInt32("slot_" + i);
+                                    if (runeId > 0)
+                                    {
+                                        page.SlotEntries.Add(new SlotEntry { RuneSlotId = i, RuneId = runeId });
+                                    }
+                                }
+                                dbSpellBook.BookPages.Add(page);
+                            }
+                        }
+                    }
+                    if (dbSpellBook.BookPages.Count == 0)
+                    {
+                        dbSpellBook.BookPages.Add(new SpellBookPageDTO { PageId = 1, Name = "Rune Page 1", Current = true, SummonerId = summonerSender._sumId, CreateDate = DateTime.Now, SlotEntries = new ArrayCollection() });
+                        dbSpellBook.BookPages.Add(new SpellBookPageDTO { PageId = 2, Name = "Rune Page 2", Current = false, SummonerId = summonerSender._sumId, CreateDate = DateTime.Now, SlotEntries = new ArrayCollection() });
+                    }
+                }
+            }
+            catch (Exception ex) { Console.WriteLine("[ERROR] DB Profile Rune: " + ex.Message); }
 
             AllSummonerData allSD = new AllSummonerData()
             {
@@ -71,36 +123,12 @@ namespace Draven.Messages.SummonerService
                     SummonerId = summonerSender._sumId,
                     SummonerLevel = 30
                 },
-                SpellBook = new SpellBookDTO
-                {
-                    SummonerId = summonerSender._sumId,
-                    DateString = "Wed Jul 17 23:05:42 PDT 2013",
-                    BookPages = new ArrayCollection
-                                {
-                                    new SpellBookPageDTO
-                                    {
-                                        Current = true,
-                                        SummonerId = summonerSender._sumId,
-                                        PageId = 2.0,
-                                        CreateDate = DateTime.Now,
-                                        Name = "Rune Page 1",
-                                        SlotEntries = new ArrayCollection()
-                                    },
-                                    new SpellBookPageDTO
-                                    {
-                                        Current = false,
-                                        SummonerId = summonerSender._sumId,
-                                        PageId = 3.0,
-                                        CreateDate = DateTime.Now,
-                                        Name = "Rune Page 2",
-                                        SlotEntries = new ArrayCollection()
-                                    }
-                                }
-                },
-
+                // Atribuim SpellBook-ul preluat din baza de date
+                SpellBook = dbSpellBook
             };
 
-            Console.WriteLine(JsonConvert.SerializeObject(allSD));
+            // Nu avem nevoie sa spammam consola cu json-ul profilului
+            // Console.WriteLine(JsonConvert.SerializeObject(allSD));
 
             e.ReturnRequired = true;
             e.Data = allSD;
