@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 16, 2026 at 11:00 AM
+-- Generation Time: Apr 16, 2026 at 04:50 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -43,7 +43,7 @@ CREATE TABLE `accounts` (
 
 INSERT INTO `accounts` (`id`, `username`, `password`, `summonerId`, `RP`, `IP`, `isBanned`) VALUES
 (1, 'test', 'test', 1, 999999, 999999, 0),
-(2, 'Nepstyler', '1', 2, 999999, 999999, 0);
+(2, 'Nepstyler', '1', 2, 1820, 6300, 0);
 
 -- --------------------------------------------------------
 
@@ -949,29 +949,7 @@ CREATE TABLE `lobbies` (
 --
 
 INSERT INTO `lobbies` (`id`, `name`, `ownerId`, `mapId`, `gameMode`, `gameType`, `password`, `status`) VALUES
-(1, 'Maufeat\'s game', 1, 10, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(2, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(3, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(4, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(5, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(6, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(7, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(8, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(9, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(10, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(11, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(12, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(13, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(14, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(15, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(16, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(17, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(18, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(19, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(20, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(21, 'Maufeat\'s game', 1, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(22, 'Nepstyler\'s game', 2, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE'),
-(23, 'Nepstyler\'s game', 2, 11, 'CLASSIC', 'PRACTICE_GAME', NULL, 'IDLE');
+(24, 'Nepstyler\'s game', 2, 12, 'ARAM', 'PRACTICE_GAME', NULL, 'IDLE');
 
 -- --------------------------------------------------------
 
@@ -1014,7 +992,8 @@ INSERT INTO `lobby_participants` (`lobbyId`, `summonerId`, `team`, `pickId`, `is
 (20, 1, 1, 0, 0),
 (21, 1, 1, 0, 0),
 (22, 2, 1, 0, 0),
-(23, 2, 1, 0, 0);
+(23, 2, 1, 0, 0),
+(24, 2, 1, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1035,8 +1014,9 @@ CREATE TABLE `mastery_pages` (
 --
 
 INSERT INTO `mastery_pages` (`id`, `account_id`, `page_name`, `is_current`, `talents_json`) VALUES
-(34, 2, 'Yasuo', 1, '{}'),
-(35, 2, 'AP', 0, '{}');
+(71, 2, 'Yasuo', 1, '{\"4111\":1,\"4112\":4,\"4114\":1,\"4122\":3,\"4121\":1,\"4124\":1,\"4131\":1,\"4132\":1,\"4142\":2,\"4141\":1,\"4152\":3,\"4151\":1,\"4162\":1,\"4211\":2,\"4212\":2,\"4221\":1,\"4222\":3,\"4232\":1}'),
+(72, 2, 'AD', 0, '{}'),
+(73, 2, 'AP', 0, '{}');
 
 -- --------------------------------------------------------
 
@@ -1086,8 +1066,10 @@ CREATE TABLE `rune_pages` (
 --
 
 INSERT INTO `rune_pages` (`id`, `account_id`, `page_name`, `is_current`, `slot_1`, `slot_2`, `slot_3`, `slot_4`, `slot_5`, `slot_6`, `slot_7`, `slot_8`, `slot_9`, `slot_10`, `slot_11`, `slot_12`, `slot_13`, `slot_14`, `slot_15`, `slot_16`, `slot_17`, `slot_18`, `slot_19`, `slot_20`, `slot_21`, `slot_22`, `slot_23`, `slot_24`, `slot_25`, `slot_26`, `slot_27`, `slot_28`, `slot_29`, `slot_30`) VALUES
-(13, 2, 'Yasuo', 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(14, 2, 'Rune Page 2', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+(21, 2, 'Yasuo', 1, 5251, 5251, 5251, 5251, 5251, 5245, 5245, 5245, 5245, 5311, 5317, 5317, 5317, 5317, 5317, 5317, 5317, 5317, 5289, 5289, 5289, 5289, 5289, 5289, 5289, 5289, 5289, 5335, 5335, 5335),
+(22, 2, 'Rune Page 2', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(23, 2, 'Rune Page 3', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(24, 2, 'Rune Page 3', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1193,19 +1175,19 @@ ALTER TABLE `games`
 -- AUTO_INCREMENT for table `lobbies`
 --
 ALTER TABLE `lobbies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `mastery_pages`
 --
 ALTER TABLE `mastery_pages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT for table `rune_pages`
 --
 ALTER TABLE `rune_pages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `summoner`
