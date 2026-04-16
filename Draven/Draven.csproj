@@ -164,6 +164,7 @@
     <Compile Include="Structures\Leagues\Client\DTO\SummonerLeaguesDTO.cs" />
     <Compile Include="Structures\Leagues\Pojo\LeagueItemDTO.cs" />
     <Compile Include="Structures\Leagues\Pojo\LeagueListDTO.cs" />
+    <Compile Include="Structures\Platform\Catalog\Rune.cs" />
     <Compile Include="Structures\Platform\GameInvite\InvitationMetadata.cs" />
     <Compile Include="Structures\Platform\GameInvite\InvitationPlayer.cs" />
     <Compile Include="Structures\Platform\GameInvite\LobbyStatus.cs" />

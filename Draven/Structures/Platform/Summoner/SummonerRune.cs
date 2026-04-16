@@ -1,5 +1,6 @@
 ﻿using System;
 using RtmpSharp.IO;
+using Draven.Structures.Platform.Catalog;
 
 namespace Draven.Structures.Platform.Summoner
 {
@@ -21,5 +22,8 @@ namespace Draven.Structures.Platform.Summoner
 
         [SerializedName("summonerId")]
         public double SummonerId { get; set; }
+
+        [SerializedName("rune")]
+        public Rune Rune { get; set; }
     }
 }
