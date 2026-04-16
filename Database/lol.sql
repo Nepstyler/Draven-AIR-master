@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 16, 2026 at 04:50 PM
+-- Generation Time: Apr 16, 2026 at 05:21 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -34,16 +34,24 @@ CREATE TABLE `accounts` (
   `summonerId` int(12) NOT NULL,
   `RP` int(12) NOT NULL DEFAULT 999999,
   `IP` int(12) NOT NULL DEFAULT 999999,
-  `isBanned` int(1) NOT NULL DEFAULT 0
+  `isBanned` int(1) NOT NULL DEFAULT 0,
+  `ranked_tier` varchar(20) NOT NULL DEFAULT 'UNRANKED',
+  `ranked_division` varchar(5) NOT NULL DEFAULT 'I',
+  `ranked_wins` int(11) NOT NULL DEFAULT 0,
+  `ranked_lp` int(11) NOT NULL DEFAULT 0,
+  `kudos_friendly` int(11) NOT NULL DEFAULT 0,
+  `kudos_helpful` int(11) NOT NULL DEFAULT 0,
+  `kudos_teamwork` int(11) NOT NULL DEFAULT 0,
+  `kudos_honorable_opponent` int(11) NOT NULL DEFAULT 0
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `accounts`
 --
 
-INSERT INTO `accounts` (`id`, `username`, `password`, `summonerId`, `RP`, `IP`, `isBanned`) VALUES
-(1, 'test', 'test', 1, 999999, 999999, 0),
-(2, 'Nepstyler', '1', 2, 1820, 6300, 0);
+INSERT INTO `accounts` (`id`, `username`, `password`, `summonerId`, `RP`, `IP`, `isBanned`, `ranked_tier`, `ranked_division`, `ranked_wins`, `ranked_lp`, `kudos_friendly`, `kudos_helpful`, `kudos_teamwork`, `kudos_honorable_opponent`) VALUES
+(1, 'test', 'test', 1, 999999, 999999, 0, 'UNRANKED', 'I', 0, 0, 0, 0, 0, 0),
+(2, 'Nepstyler', '1', 2, 1820, 6300, 0, 'CHALLENGER', 'I', 1337, 850, 50, 25, 120, 90);
 
 -- --------------------------------------------------------
 

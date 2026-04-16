@@ -152,6 +152,7 @@
     <Compile Include="Messages\SummonerIconService\GetSummonerIconInventory.cs" />
     <Compile Include="Messages\SummonerRuneService\GetSummonerRuneInventory.cs" />
     <Compile Include="Messages\SummonerService\GetAllSummonerDataByAccount.cs" />
+    <Compile Include="Messages\SummonerService\GetSummonerByName.cs" />
     <Compile Include="Messages\SummonerService\UpdateProfileIconId.cs" />
     <Compile Include="Messages\SummonerTeamService\CreatePlayer.cs" />
     <Compile Include="Program.cs" />
