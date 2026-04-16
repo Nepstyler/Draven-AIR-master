@@ -84,7 +84,7 @@
 
         public static void InitMasteryAndRuneTree()
         {
-            Console.WriteLine("[LOG] Initialize Mastery and Rune Tree (100% Accurate Grid)");
+            Console.WriteLine("[LOG] Initialize Mastery and Rune Tree (Defense Accurate Grid)");
 
             TalentTree = new RtmpSharp.IO.AMF3.ArrayCollection();
 
@@ -148,32 +148,50 @@
             addRow(1, 5, 20);
             addTalent(1, 5, 1, 4162, 1, 0);
 
-            // ================== DEFENSE TREE ==================
-            addRow(2, 0, 0); // Row 1
-            addTalent(2, 0, 0, 4211, 2, 0); addTalent(2, 0, 1, 4212, 2, 0); addTalent(2, 0, 2, 4213, 2, 0); addTalent(2, 0, 3, 4214, 2, 0);
-            addRow(2, 1, 4); // Row 2
-            addTalent(2, 1, 0, 4221, 1, 4211); addTalent(2, 1, 1, 4222, 3, 0); addTalent(2, 1, 3, 4224, 1, 4214);
-            addRow(2, 2, 8); // Row 3
-            addTalent(2, 2, 0, 4231, 1, 0); addTalent(2, 2, 1, 4232, 1, 4222); addTalent(2, 2, 2, 4233, 3, 0); addTalent(2, 2, 3, 4234, 3, 0);
-            addRow(2, 3, 12); // Row 4
-            addTalent(2, 3, 0, 4241, 3, 0); addTalent(2, 3, 1, 4242, 1, 0); addTalent(2, 3, 2, 4243, 1, 4233); addTalent(2, 3, 3, 4244, 1, 4234);
-            addRow(2, 4, 16); // Row 5
-            addTalent(2, 4, 0, 4251, 1, 4241); addTalent(2, 4, 1, 4252, 4, 0); addTalent(2, 4, 2, 4253, 1, 0);
-            addRow(2, 5, 20); // Row 6
-            addTalent(2, 5, 1, 4262, 1, 0);
+            // ================== DEFENSE TREE (Refacut la milimetru dupa pozele tale) ==================
+            addRow(2, 0, 0); // Linia 1
+            addTalent(2, 0, 0, 4211, 2, 0); // Block (Poz 1)
+            addTalent(2, 0, 1, 4212, 2, 0); // Recovery (Poz 2)
+            addTalent(2, 0, 2, 4242, 1, 0); // Swiftness (Poz 3)
+            addTalent(2, 0, 3, 4214, 2, 0); // Tough Skin (Poz 4)
 
-            // ================== UTILITY TREE ==================
-            addRow(3, 0, 0); // Row 1
-            addTalent(3, 0, 0, 4311, 1, 0); addTalent(3, 0, 1, 4312, 3, 0); addTalent(3, 0, 2, 4313, 3, 0); addTalent(3, 0, 3, 4314, 1, 0);
-            addRow(3, 1, 4); // Row 2
-            addTalent(3, 1, 1, 4322, 3, 0); addTalent(3, 1, 2, 4323, 1, 4313); addTalent(3, 1, 3, 4324, 1, 0);
-            addRow(3, 2, 8); // Row 3
-            addTalent(3, 2, 0, 4331, 3, 0); addTalent(3, 2, 1, 4332, 1, 0); addTalent(3, 2, 2, 4333, 3, 0); addTalent(3, 2, 3, 4334, 1, 4324);
-            addRow(3, 3, 12); // Row 4
-            addTalent(3, 3, 0, 4341, 1, 4331); addTalent(3, 3, 1, 4342, 1, 0); addTalent(3, 3, 2, 4343, 3, 0); addTalent(3, 3, 3, 4344, 2, 0);
-            addRow(3, 4, 16); // Row 5
-            addTalent(3, 4, 1, 4352, 1, 4342); addTalent(3, 4, 2, 4353, 3, 0);
-            addRow(3, 5, 20); // Row 6
+            addRow(2, 1, 4); // Linia 2
+            addTalent(2, 1, 0, 4221, 1, 4211); // Unyielding (din Block)
+            addTalent(2, 1, 1, 4222, 3, 0);    // Veteran's Scars
+            addTalent(2, 1, 3, 4224, 1, 4214); // Bladed Armor (din Tough Skin)
+
+            addRow(2, 2, 8); // Linia 3
+            addTalent(2, 2, 0, 4262, 1, 0);    // Tenacious (Poz 1)
+            addTalent(2, 2, 1, 4232, 1, 4222); // Juggernaut (din Vet Scars)
+            addTalent(2, 2, 2, 4233, 3, 0);    // Hardiness
+            addTalent(2, 2, 3, 4234, 3, 0);    // Resistance
+
+            addRow(2, 3, 12); // Linia 4
+            addTalent(2, 3, 0, 4241, 3, 0);    // Perseverance
+            addTalent(2, 3, 1, 4253, 1, 0);    // Runic Blessing (Poz 2)
+            addTalent(2, 3, 2, 4243, 1, 4233); // Reinforced Armor (din Hardiness)
+            addTalent(2, 3, 3, 4244, 1, 4234); // Evasive (din Resistance)
+
+            addRow(2, 4, 16); // Linia 5
+            addTalent(2, 4, 0, 4251, 1, 4241); // Second Wind (coboara din Perseverance, logic pe Poz 1)
+            addTalent(2, 4, 1, 4213, 2, 0);    // Enchanted Armor (Poz 2)
+            addTalent(2, 4, 2, 4231, 1, 0);    // Oppression (Poz 3)
+
+            addRow(2, 5, 20); // Linia 6
+            addTalent(2, 5, 1, 4252, 4, 0);    // Legendary Guardian (Poz 2)
+
+            // ================== UTILITY TREE (Il lasam cum era pt a ne asigura pe Defense) ==================
+            addRow(3, 0, 0);
+            addTalent(3, 0, 0, 4311, 1, 0); addTalent(3, 0, 1, 4312, 3, 0); addTalent(3, 0, 2, 4342, 3, 0); addTalent(3, 0, 3, 4314, 1, 0);
+            addRow(3, 1, 4);
+            addTalent(3, 1, 1, 4321, 3, 0); addTalent(3, 1, 2, 4322, 1, 4313); addTalent(3, 1, 3, 4323, 1, 0);
+            addRow(3, 2, 8);
+            addTalent(3, 2, 0, 4324, 3, 0); addTalent(3, 2, 1, 4332, 3, 0); addTalent(3, 2, 2, 4331, 1, 0); addTalent(3, 2, 3, 4333, 1, 4323);
+            addRow(3, 3, 12);
+            addTalent(3, 3, 0, 4341, 1, 4324); addTalent(3, 3, 1, 4334, 1, 0); addTalent(3, 3, 2, 4313, 3, 0);
+            addRow(3, 4, 16);
+            addTalent(3, 4, 1, 4352, 1, 4334); addTalent(3, 4, 2, 4351, 3, 0);
+            addRow(3, 5, 20);
             addTalent(3, 5, 1, 4362, 1, 0);
 
             #region Rune Loading
