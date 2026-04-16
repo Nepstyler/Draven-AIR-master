@@ -84,7 +84,7 @@
 
         public static void InitMasteryAndRuneTree()
         {
-            Console.WriteLine("[LOG] Initialize Mastery and Rune Tree (Defense Accurate Grid)");
+            Console.WriteLine("[LOG] Initialize Mastery and Rune Tree (100% Original S4 GitHub Data)");
 
             TalentTree = new RtmpSharp.IO.AMF3.ArrayCollection();
 
@@ -111,88 +111,115 @@
                 });
             };
 
-            Action<int, int, int, int, int, int> addTalent = (groupId, rowIndex, colIndex, id, maxRank, prereq) => {
+            // Funcția care generează ID-ul corect matematic ca la Riot: 4000 + (Arbore*100) + (Rând*10) + Coloană
+            Action<int, int, int, int, int> addTalent = (groupId, rowIndex, colIndex, maxRank, prereqColIndex) => {
                 var row = (Draven.Structures.Platform.Summoner.TalentRow)((Draven.Structures.Platform.Summoner.TalentGroup)TalentTree[groupId - 1]).TalentRows[rowIndex];
+
+                int gameCode = 4000 + (groupId * 100) + ((rowIndex + 1) * 10) + (colIndex + 1);
+
                 var t = new Draven.Structures.Platform.Summoner.Talent
                 {
                     Index = colIndex,
-                    GameCode = id,
-                    TltId = id,
+                    GameCode = gameCode,
+                    TltId = gameCode,
                     MinLevel = 1,
                     MinTier = 1,
                     MaxRank = maxRank,
                     TalentGroupId = groupId,
                     TalentRowId = row.TltRowId,
-                    Name = "Tlt" + id,
+                    Name = "Tlt" + gameCode,
                     Level1Desc = "-",
                     Level2Desc = "-",
                     Level3Desc = "-",
                     Level4Desc = "-",
                     Level5Desc = "-"
                 };
-                if (prereq != 0) t.PrereqTalentGameCode = prereq;
+
+                // Dacă are prereq, se calculează automat ID-ul măiestriei de deasupra ei!
+                if (prereqColIndex != -1)
+                {
+                    t.PrereqTalentGameCode = 4000 + (groupId * 100) + (rowIndex * 10) + (prereqColIndex + 1);
+                }
+
                 row.Talents.Add(t);
             };
 
             // ================== OFFENSE TREE ==================
             addRow(1, 0, 0);
-            addTalent(1, 0, 0, 4111, 1, 0); addTalent(1, 0, 1, 4112, 4, 0); addTalent(1, 0, 2, 4113, 4, 0); addTalent(1, 0, 3, 4114, 1, 0);
+            addTalent(1, 0, 0, 1, -1); addTalent(1, 0, 1, 4, -1); addTalent(1, 0, 2, 4, -1); addTalent(1, 0, 3, 1, -1);
             addRow(1, 1, 4);
-            addTalent(1, 1, 0, 4121, 1, 0); addTalent(1, 1, 1, 4122, 3, 0); addTalent(1, 1, 2, 4123, 3, 0); addTalent(1, 1, 3, 4124, 1, 4114);
+            addTalent(1, 1, 0, 1, -1); addTalent(1, 1, 1, 3, -1); addTalent(1, 1, 2, 3, -1); addTalent(1, 1, 3, 1, 3);
             addRow(1, 2, 8);
-            addTalent(1, 2, 0, 4131, 1, 0); addTalent(1, 2, 1, 4132, 1, 4122); addTalent(1, 2, 2, 4133, 1, 4123); addTalent(1, 2, 3, 4134, 3, 0);
+            addTalent(1, 2, 0, 1, -1); addTalent(1, 2, 1, 1, 1); addTalent(1, 2, 2, 1, 2); addTalent(1, 2, 3, 3, -1);
             addRow(1, 3, 12);
-            addTalent(1, 3, 0, 4141, 1, 4131); addTalent(1, 3, 1, 4142, 3, 0); addTalent(1, 3, 2, 4143, 3, 0); addTalent(1, 3, 3, 4144, 1, 4134);
+            addTalent(1, 3, 0, 1, 0); addTalent(1, 3, 1, 3, -1); addTalent(1, 3, 2, 3, -1); addTalent(1, 3, 3, 1, 3);
             addRow(1, 4, 16);
-            addTalent(1, 4, 0, 4151, 1, 0); addTalent(1, 4, 1, 4152, 3, 0); addTalent(1, 4, 3, 4154, 1, 0);
+            addTalent(1, 4, 0, 1, -1); addTalent(1, 4, 1, 3, -1); addTalent(1, 4, 3, 1, -1);
             addRow(1, 5, 20);
-            addTalent(1, 5, 1, 4162, 1, 0);
+            addTalent(1, 5, 1, 1, -1);
 
-            // ================== DEFENSE TREE (Refacut la milimetru dupa pozele tale) ==================
-            addRow(2, 0, 0); // Linia 1
-            addTalent(2, 0, 0, 4211, 2, 0); // Block (Poz 1)
-            addTalent(2, 0, 1, 4212, 2, 0); // Recovery (Poz 2)
-            addTalent(2, 0, 2, 4242, 1, 0); // Swiftness (Poz 3)
-            addTalent(2, 0, 3, 4214, 2, 0); // Tough Skin (Poz 4)
+            // ================== DEFENSE TREE (Identic cu data.js original din S4) ==================
+            addRow(2, 0, 0); // Linia 0
+            addTalent(2, 0, 0, 2, -1); // Block
+            addTalent(2, 0, 1, 2, -1); // Recovery
+            addTalent(2, 0, 2, 2, -1); // Enchanted Armor
+            addTalent(2, 0, 3, 2, -1); // Tough Skin
 
-            addRow(2, 1, 4); // Linia 2
-            addTalent(2, 1, 0, 4221, 1, 4211); // Unyielding (din Block)
-            addTalent(2, 1, 1, 4222, 3, 0);    // Veteran's Scars
-            addTalent(2, 1, 3, 4224, 1, 4214); // Bladed Armor (din Tough Skin)
+            addRow(2, 1, 4); // Linia 1
+            addTalent(2, 1, 0, 1, 0);  // Unyielding (din Block col 0)
+            addTalent(2, 1, 1, 3, -1); // Veteran Scars
+            addTalent(2, 1, 3, 1, 3);  // Bladed Armor (din Tough Skin col 3)
 
-            addRow(2, 2, 8); // Linia 3
-            addTalent(2, 2, 0, 4262, 1, 0);    // Tenacious (Poz 1)
-            addTalent(2, 2, 1, 4232, 1, 4222); // Juggernaut (din Vet Scars)
-            addTalent(2, 2, 2, 4233, 3, 0);    // Hardiness
-            addTalent(2, 2, 3, 4234, 3, 0);    // Resistance
+            addRow(2, 2, 8); // Linia 2
+            addTalent(2, 2, 0, 1, -1); // Oppression
+            addTalent(2, 2, 1, 1, 1);  // Juggernaut (din Veteran Scars col 1)
+            addTalent(2, 2, 2, 3, -1); // Hardiness
+            addTalent(2, 2, 3, 3, -1); // Resistance
 
-            addRow(2, 3, 12); // Linia 4
-            addTalent(2, 3, 0, 4241, 3, 0);    // Perseverance
-            addTalent(2, 3, 1, 4253, 1, 0);    // Runic Blessing (Poz 2)
-            addTalent(2, 3, 2, 4243, 1, 4233); // Reinforced Armor (din Hardiness)
-            addTalent(2, 3, 3, 4244, 1, 4234); // Evasive (din Resistance)
+            addRow(2, 3, 12); // Linia 3
+            addTalent(2, 3, 0, 3, -1); // Perseverance
+            addTalent(2, 3, 1, 1, -1); // Swiftness
+            addTalent(2, 3, 2, 1, 2);  // Reinforced Armor (din Hardiness col 2)
+            addTalent(2, 3, 3, 1, 3);  // Evasive (din Resistance col 3)
 
-            addRow(2, 4, 16); // Linia 5
-            addTalent(2, 4, 0, 4251, 1, 4241); // Second Wind (coboara din Perseverance, logic pe Poz 1)
-            addTalent(2, 4, 1, 4213, 2, 0);    // Enchanted Armor (Poz 2)
-            addTalent(2, 4, 2, 4231, 1, 0);    // Oppression (Poz 3)
+            addRow(2, 4, 16); // Linia 4
+            addTalent(2, 4, 0, 1, -1); // Second Wind
+            addTalent(2, 4, 1, 4, -1); // Legendary Guardian
+            addTalent(2, 4, 2, 1, -1); // Runic Blessing
 
-            addRow(2, 5, 20); // Linia 6
-            addTalent(2, 5, 1, 4252, 4, 0);    // Legendary Guardian (Poz 2)
+            addRow(2, 5, 20); // Linia 5
+            addTalent(2, 5, 1, 1, -1); // Tenacious
 
-            // ================== UTILITY TREE (Il lasam cum era pt a ne asigura pe Defense) ==================
-            addRow(3, 0, 0);
-            addTalent(3, 0, 0, 4311, 1, 0); addTalent(3, 0, 1, 4312, 3, 0); addTalent(3, 0, 2, 4342, 3, 0); addTalent(3, 0, 3, 4314, 1, 0);
-            addRow(3, 1, 4);
-            addTalent(3, 1, 1, 4321, 3, 0); addTalent(3, 1, 2, 4322, 1, 4313); addTalent(3, 1, 3, 4323, 1, 0);
-            addRow(3, 2, 8);
-            addTalent(3, 2, 0, 4324, 3, 0); addTalent(3, 2, 1, 4332, 3, 0); addTalent(3, 2, 2, 4331, 1, 0); addTalent(3, 2, 3, 4333, 1, 4323);
-            addRow(3, 3, 12);
-            addTalent(3, 3, 0, 4341, 1, 4324); addTalent(3, 3, 1, 4334, 1, 0); addTalent(3, 3, 2, 4313, 3, 0);
-            addRow(3, 4, 16);
-            addTalent(3, 4, 1, 4352, 1, 4334); addTalent(3, 4, 2, 4351, 3, 0);
-            addRow(3, 5, 20);
-            addTalent(3, 5, 1, 4362, 1, 0);
+            // ================== UTILITY TREE (Identic cu data.js original din S4) ==================
+            addRow(3, 0, 0); // Linia 0
+            addTalent(3, 0, 0, 1, -1); // Phasewalk
+            addTalent(3, 0, 1, 3, -1); // Fleet of Foot
+            addTalent(3, 0, 2, 3, -1); // Meditation
+            addTalent(3, 0, 3, 1, -1); // Scout
+
+            addRow(3, 1, 4); // Linia 1
+            addTalent(3, 1, 1, 3, -1); // Summoner's Insight
+            addTalent(3, 1, 2, 1, 2);  // Strength of Spirit (din Meditation col 2)
+            addTalent(3, 1, 3, 1, -1); // Alchemist
+
+            addRow(3, 2, 8); // Linia 2
+            addTalent(3, 2, 0, 3, -1); // Greed
+            addTalent(3, 2, 1, 1, -1); // Runic Affinity
+            addTalent(3, 2, 2, 1, -1); // Vampirism
+            addTalent(3, 2, 3, 1, 3);  // Culinary Master (din Alchemist col 3)
+
+            addRow(3, 3, 12); // Linia 3
+            addTalent(3, 3, 0, 1, 0);  // Scavenger (din Greed col 0)
+            addTalent(3, 3, 1, 1, -1); // Wealth
+            addTalent(3, 3, 2, 3, -1); // Expanded Mind
+            addTalent(3, 3, 3, 2, -1); // Inspiration
+
+            addRow(3, 4, 16); // Linia 4
+            addTalent(3, 4, 1, 1, 1);  // Bandit (din Wealth col 1)
+            addTalent(3, 4, 2, 3, -1); // Intelligence
+
+            addRow(3, 5, 20); // Linia 5
+            addTalent(3, 5, 1, 1, -1); // Nimble/Wanderer
 
             #region Rune Loading
             RuneTree = new RtmpSharp.IO.AMF3.ArrayCollection();
