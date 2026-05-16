@@ -15,8 +15,8 @@ namespace Draven.Messages.GameService
     public class ChampionSelectCompleted : IMessage
     {
         // Path to the game server files
-        private string GameInfoPath = @"D:\Sandbox\TestGrounds\GameServerConsole\bin\Debug\net8.0\Settings\GameInfo.json";
-        private string GameServerPath = @"D:\Sandbox\TestGrounds\GameServerConsole\bin\Debug\net8.0\GameServerConsole.exe";
+        private string GameInfoPath = @"D:\Program Files\TestGrounds\GameServerConsole\bin\Debug\net8.0\Settings\GameInfo.json";
+        private string GameServerPath = @"D:\Program Files\TestGrounds\GameServerConsole\bin\Debug\net8.0\GameServerConsole.exe";
 
         public RemotingMessageReceivedEventArgs HandleMessage(object sender, RemotingMessageReceivedEventArgs e)
         {
